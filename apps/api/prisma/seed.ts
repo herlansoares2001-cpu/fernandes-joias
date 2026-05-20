@@ -21,24 +21,38 @@ async function processCSV(filePath: string) {
 
     const batch: any[] = [];
 
-    parser.on('readable', async () => {
+    parser.on('readable', () => {
       let record;
       while ((record = parser.read()) !== null) {
-        if (record.type !== 'product' || record.status !== 'publish') {
-          continue; // Skip non-products or drafts
+        // Skip non-products or drafts ONLY if record.type exists (backward compatibility)
+        if (record.type && (record.type !== 'product' || record.status !== 'publish')) {
+          continue;
         }
 
-        const name = record['title/rendered'] || record['title'] || 'Unnamed Product';
-        const slug = record['slug'] || name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-        const description = record['content/rendered'] || record['content'] || '';
-        const imageUrl = record['yoast_head_json/og_image/0/url'] || null;
+        const name = record['Nome do Produto'] || record['title/rendered'] || record['title'] || 'Unnamed Product';
+        const slug = record['Slug'] || record['slug'] || name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const description = record['Descrição Limpa'] || record['Descrição Bruta'] || record['content/rendered'] || record['content'] || '';
+        const imageUrl = record['URL da Imagem'] || record['yoast_head_json/og_image/0/url'] || null;
 
-        // Ensure we don't duplicate slugs
+        const nameLower = name.toLowerCase();
+        let basePrice = 119.90;
+        if (nameLower.includes('anel')) {
+          basePrice = 159.90;
+        } else if (nameLower.includes('colar') || nameLower.includes('escapulário') || nameLower.includes('gargantilha')) {
+          basePrice = 189.90;
+        } else if (nameLower.includes('pulseira')) {
+          basePrice = 149.90;
+        } else if (nameLower.includes('brinco') || nameLower.includes('trio') || nameLower.includes('argola')) {
+          basePrice = 89.90;
+        } else if (nameLower.includes('pingente') || nameLower.includes('medalha') || nameLower.includes('berloque')) {
+          basePrice = 79.90;
+        }
+
         batch.push({
           slug: slug,
           name: name,
           description: description,
-          basePrice: 1500.00, // Fake base price for now as WooCommerce price meta is missing in default export
+          basePrice: basePrice,
           certificationUrl: imageUrl,
           isActive: true,
         });
@@ -51,12 +65,35 @@ async function processCSV(filePath: string) {
       console.log(`Processing ${batch.length} products from ${filePath}...`);
       for (const item of batch) {
         try {
-          await prisma.product.upsert({
+          const createdProduct = await prisma.product.upsert({
             where: { slug: item.slug },
-            update: {},
+            update: {
+              name: item.name,
+              description: item.description,
+              basePrice: item.basePrice,
+              certificationUrl: item.certificationUrl,
+              isActive: true,
+            },
             create: item,
           });
-        } catch (e) {
+
+          // Verify if variant already exists
+          const existingVariant = await prisma.variant.findFirst({
+            where: { productId: createdProduct.id },
+          });
+
+          if (!existingVariant) {
+            await prisma.variant.create({
+              data: {
+                sku: `def-${item.slug}`.slice(0, 90),
+                productId: createdProduct.id,
+                size: 'Único',
+                priceAdjustment: 0.00,
+                weightGrams: 1.5,
+              }
+            });
+          }
+        } catch (e: any) {
           console.warn(`Failed to seed product ${item.slug}:`, e.message);
         }
       }

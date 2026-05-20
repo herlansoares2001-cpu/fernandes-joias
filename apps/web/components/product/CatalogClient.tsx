@@ -258,7 +258,7 @@ export default function CatalogClient({ initialProducts }: CatalogClientProps) {
   };
 
   return (
-    <section className="bg-[#070707] text-[#EDE6D6] min-h-screen pt-32 pb-24 font-sans selection:bg-[#C9A84C] selection:text-[#070707]">
+    <section className="bg-[#070707] text-[#EDE6D6] min-h-screen pt-40 lg:pt-48 pb-24 font-sans selection:bg-[#C9A84C] selection:text-[#070707]">
       <div className="max-w-7xl mx-auto px-6 w-full">
         
         {/* Editorial Page Header */}

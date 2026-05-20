@@ -140,7 +140,7 @@ async function getProducts(): Promise<Product[]> {
 
 function CatalogSkeleton() {
   return (
-    <div className="bg-[#070707] min-h-screen pt-32 pb-24 text-center">
+    <div className="bg-[#070707] min-h-screen pt-40 lg:pt-48 pb-24 text-center">
       <span className="text-[9px] tracking-[0.45em] uppercase text-[#C9A84C] font-semibold animate-pulse">
         Carregando o Acervo Fernandes...
       </span>
