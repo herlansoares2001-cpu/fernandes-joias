@@ -1,22 +1,30 @@
 import { Suspense } from 'react';
-import Hero from '../components/home/Hero';
-import Categories from '../components/home/Categories';
-import Marquee from '../components/home/Marquee';
-import { EditorialOne, EditorialTwo } from '../components/home/EditorialBlock';
-import ProductGrid from '../components/product/ProductGrid';
-import Testimonials from '../components/home/Testimonials';
-import Newsletter from '../components/home/Newsletter';
-import type { Product } from '../types';
+import CatalogClient from '../../components/product/CatalogClient';
+import type { Product } from '../../types';
+
+// Revalidate every 10 seconds for stock/price fresh state (ISR)
+export const revalidate = 10;
 
 async function getProducts(): Promise<Product[]> {
-  try {
-    const res = await fetch('http://localhost:3002/api/v1/products', {
-      cache: 'no-store',
-    });
-    if (!res.ok) throw new Error('Failed to fetch');
-    return await res.json();
-  } catch (error) {
-    console.error('Error fetching products from API, returning fallbacks:', error);
+  const urls = [
+    'http://127.0.0.1:3002/api/v1/products',
+    'http://localhost:3002/api/v1/products'
+  ];
+
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, {
+        next: { revalidate: 10 },
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (error) {
+      console.warn(`Failed to fetch from ${url}:`, error);
+    }
+  }
+
+  console.error('Error fetching products for catalog API, returning fallbacks:');
     // Real WooCommerce products from the brand catalog as fallback
     return [
       {
@@ -90,47 +98,61 @@ async function getProducts(): Promise<Product[]> {
         basePrice: 119.90,
         certificationUrl: 'https://useupvix.com.br/wp-content/uploads/2026/05/WhatsApp-Image-2026-05-18-at-16.48.39.jpeg',
         variants: [],
+      },
+      {
+        id: '9',
+        slug: 'pingente-patinha',
+        name: 'Pingente Patinha',
+        description: 'Afeto e presença com o pet de forma discreta, elegante e atemporal em Prata 925 com acabamento chapado cortado a laser.',
+        basePrice: 89.90,
+        certificationUrl: 'https://useupvix.com.br/wp-content/uploads/2026/01/colar-patinha-peca.png',
+        variants: [],
+      },
+      {
+        id: '10',
+        slug: 'pingente-por-do-sol',
+        name: 'Pingente Pôr do Sol',
+        description: 'Inspirado no momento em que o dia desacelera. Um design circular em Prata 925 pura com gravação delicada.',
+        basePrice: 95.00,
+        certificationUrl: 'https://useupvix.com.br/wp-content/uploads/2026/01/por-do-sol-peca.png',
+        variants: [],
+      },
+      {
+        id: '11',
+        slug: 'brinco-borboleta-origami-grande',
+        name: 'Brinco Borboleta Origami - Grande',
+        description: 'Par de brincos de tarracha com formato de borboleta de origami estilizado em Prata 925 legítima.',
+        basePrice: 69.90,
+        certificationUrl: 'https://useupvix.com.br/wp-content/uploads/2024/10/IMG_2214-scaled.jpg',
+        variants: [],
+      },
+      {
+        id: '12',
+        slug: 'trio-de-brinco-perola',
+        name: 'Trio de Brinco - Pérola',
+        description: 'Trio de brincos clássicos com pérola natural selecionada e base firme em Prata 925.',
+        basePrice: 109.90,
+        certificationUrl: 'https://useupvix.com.br/wp-content/uploads/2024/10/IMG_2213-scaled.jpg',
+        variants: [],
       }
     ];
-  }
 }
 
-export default async function Page() {
-  const products = await getProducts();
-
-  const ornament = (
-    <div className="ornament">
-      <div className="ornament-line"></div>
-      <div className="ornament-diamond"></div>
-      <div className="ornament-line"></div>
+function CatalogSkeleton() {
+  return (
+    <div className="bg-[#070707] min-h-screen pt-32 pb-24 text-center">
+      <span className="text-[9px] tracking-[0.45em] uppercase text-[#C9A84C] font-semibold animate-pulse">
+        Carregando o Acervo Fernandes...
+      </span>
     </div>
   );
+}
 
+export default async function CatalogPage() {
+  const products = await getProducts();
   return (
-    <>
-      <Hero />
-      
-      {ornament}
-
-      <Suspense fallback={<div className="py-24 text-center text-[#EDE6D6]/40 uppercase tracking-widest text-[10px]">Carregando universo...</div>}>
-        <Categories />
-      </Suspense>
-
-      <Marquee />
-
-      <EditorialOne />
-
-      <Suspense fallback={<div className="py-24 text-center text-[#EDE6D6]/40 uppercase tracking-widest text-[10px]">Carregando acervo...</div>}>
-        <ProductGrid initialProducts={products} />
-      </Suspense>
-
-      <EditorialTwo />
-
-      {ornament}
-
-      <Testimonials />
-
-      <Newsletter />
-    </>
+    <Suspense fallback={<CatalogSkeleton />}>
+      <CatalogClient initialProducts={products} />
+    </Suspense>
   );
 }

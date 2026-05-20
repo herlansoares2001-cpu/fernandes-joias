@@ -1,0 +1,113 @@
+{
+  "project_name": "Fernandes Joias",
+  "ai_instructions": {
+    "role": "You are an AI tasked with applying a premium luxury design system to a pre-built e-commerce codebase.",
+    "directive": "Extract the design tokens, fonts, and structural patterns from this JSON and overwrite the existing visual layer of the target project to match this 'Editorial Dark Luxury' aesthetic. Ensure sharp edges, wide letter-spacing for uppercase text, and an overall minimalist layout.",
+    "key_actions": [
+      "Map these color HEX codes into the target project's Tailwind config or CSS variables.",
+      "Replace existing fonts with the specified Google Fonts/CDN fonts.",
+      "Remover border-radius classes (use square corners) to keep the editorial/magazine feel.",
+      "Implement the CSS-based grain/noise overlay globally.",
+      "Apply the specified hover animations (image scaling, sepia filters, fade-ups)."
+    ]
+  },
+  "design_system": {
+    "theme": "Dark Luxury, Editorial, Minimalist, High-Contrast",
+    "visual_identity": {
+      "colors": {
+        "primary": {
+          "gold": "#C9A84C",
+          "gold_light": "#E2C97E",
+          "gold_dim": "#8A6E2F"
+        },
+        "backgrounds": {
+          "black": "#0B0B0B",
+          "black_soft": "#141414",
+          "black_mid": "#1E1C18"
+        },
+        "text": {
+          "off_white": "#F5F0E6",
+          "off_white_2": "#EDE6D6",
+          "dim": "rgba(245, 240, 230, 0.5)",
+          "dark": "#0B0B0B"
+        }
+      },
+      "typography": {
+        "imports": [
+          "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cormorant+Infant:ital,wght@1,300&display=swap",
+          "https://fonts.cdnfonts.com/css/lufga"
+        ],
+        "font_families": {
+          "sans": "'Lufga', 'Josefin Sans', sans-serif",
+          "serif": "'Cormorant Garamond', Georgia, serif",
+          "signature": "'Cormorant Infant', 'Cormorant Garamond', serif"
+        },
+        "usage_rules": {
+          "h1_h2_h3": "Use Serif font, weight 300 or 400. Mix normal text with italicized words (using <em> tags styled with color: gold-light).",
+          "body_text": "Use Sans font, weight 300, wide line-height (1.8 to 2.0), colored text-dim.",
+          "eyebrow_tags": "Use Sans font, uppercase, extremely wide letter-spacing (0.3em to 0.5em), very small font-size (0.55rem to 0.6rem), usually gold.",
+          "buttons": "Use Sans font, uppercase, tracking wide (0.3em), text size small (0.6rem)."
+        }
+      },
+      "global_effects": {
+        "noise_overlay": "Apply a fixed pseudo-element across the screen with an SVG fractalNoise filter at 35% opacity to add organic film grain.",
+        "custom_cursor": "Hide default cursor. Create a 6px gold-light dot and a 36px gold ring that follows mouse coordinates. On hover over links/buttons, expand ring to 56px and increase opacity.",
+        "scrollbar": "Width 3px or 4px. Track is black, thumb is gold-dim.",
+        "reveal_animation": "Elements fade in from Y: 24px/32px to Y: 0 with opacity 0 to 1, using cubic-bezier(0.19, 1, 0.22, 1)."
+      }
+    },
+    "ui_components": {
+      "buttons": {
+        "primary": "Background: gold. Text: black. Border: 1px solid gold. Hover: Background changes to gold-light, or element slides a white background across.",
+        "ghost_with_arrow": "Background: none. Text: off-white (opacity 0.6). Includes an ArrowUpRight icon. Hover: Opacity 100%, slightly increase gap between text and icon."
+      },
+      "cards_product": "Dark background (black-mid). Image has aspect-ratio 3/4 with brightness(0.9) and smooth 1s scale(1.07) hover effect. Action buttons slide up from bottom on hover.",
+      "cards_category": "Variable aspect ratios (3/5 and 3/4). Gradient overlay at bottom. Texts positioned absolute at bottom left. Arrow icon translates in from top-right on hover."
+    }
+  },
+  "home_page_structure": [
+    {
+      "section_name": "Navbar",
+      "layout": "Fixed top. Flex space-between. Left: Brand logo (Serif mixed with small sans). Middle: Navigation links. Right: Icons (Search, User, Cart).",
+      "behavior": "Transparent background with gradient to black. On scroll, height shrinks and gets a solid black_soft background."
+    },
+    {
+      "section_name": "Hero",
+      "layout": "Min-height 100vh. Right side (52% width) holds a large photo fading into the left side. Left side text block contains eyebrow tag, giant serif title, text-dim subtitle, and CTA buttons.",
+      "elements": ["Animated scroll indicator block at bottom left", "Gold stats block at bottom right (e.g., '18K Ouro', 'VVS1 Clareza')"]
+    },
+    {
+      "section_name": "Categories Grid",
+      "layout": "4-column grid mapping to fractions (1.4fr 1fr 1fr 1.4fr). Displays stylized image cards with dark overlays.",
+      "spacing": "Gap of 1px to show grid lines through a slightly translucent gold background."
+    },
+    {
+      "section_name": "Marquee Strip",
+      "layout": "Gold background strip, black text, infinite horizontal scroll animation. Separated by small rotated diamond shapes."
+    },
+    {
+      "section_name": "Editorial Block 1",
+      "layout": "2 columns. Left: Image. Right: Content block (black_soft background). Padding is generous. Includes an eyebrow, descriptive title, text, ghost button, and a signature in cursive text."
+    },
+    {
+      "section_name": "Product Grid",
+      "layout": "4 columns. Minimal gap. Each card features an image frame, floating 'New' or 'Best Seller' badges, slide-up add-to-cart buttons, brand name, product name (serif), pricing, and 5-star icons."
+    },
+    {
+      "section_name": "Editorial Block 2",
+      "layout": "Opposite of Block 1. Right: Image (styled with grayscale and high contrast). Left: Text content. Creates a zig-zag narrative flow."
+    },
+    {
+      "section_name": "Testimonials",
+      "layout": "3 columns. Cards with black_soft background. Huge gold quotation marks (opacity 0.2) in background. Includes cursive quotes and uppercase client names."
+    },
+    {
+      "section_name": "Newsletter",
+      "layout": "Centered block. Huge transparent 'FERNANDES' watermark text in background. Simple border-bottom or full bordered input with inline submit button."
+    },
+    {
+      "section_name": "Footer",
+      "layout": "Top portion: 4 cols (Brand info + Socials, Nav group 1, Nav group 2, Contact). Bottom portion: Copyright, payment method badges, legal links."
+    }
+  ]
+}
