@@ -4,6 +4,8 @@ import "./globals.css";
 import CustomCursor from "../components/CustomCursor";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
+import { CartProvider } from "../lib/cart-context";
+import { WishlistProvider } from "../lib/wishlist-context";
 
 export const metadata: Metadata = {
   title: "Fernandes Joias | Editorial Dark Luxury",
@@ -24,15 +26,20 @@ export default function RootLayout({
         {/* Custom Follow-Along Cursor */}
         <CustomCursor />
         
-        <Suspense fallback={<div className="h-28 bg-transparent" />}>
-          <Header />
-        </Suspense>
-        
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+        <CartProvider>
+          <WishlistProvider>
+            <Suspense fallback={<div className="h-28 bg-transparent" />}>
+              <Header />
+            </Suspense>
+            
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </WishlistProvider>
+        </CartProvider>
       </body>
     </html>
   );
 }
+

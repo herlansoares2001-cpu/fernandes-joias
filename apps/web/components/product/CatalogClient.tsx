@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition, useMemo } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { SlidersHorizontal, Grid, Search, X, Check, ArrowUpDown, ChevronDown } from 'lucide-react';
+import { Search, X, Check, ChevronDown, Sparkles, Circle, Layers, Sparkle, Gem, Award, PenTool } from 'lucide-react';
 import type { Product } from '../../types';
 import ProductCard from './ProductCard';
 
@@ -17,6 +17,17 @@ type SortType = 'default' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc
 export default function CatalogClient({ initialProducts }: CatalogClientProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  // Monogram scroll rotation state
+  const [rotation, setRotation] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setRotation(window.scrollY * 0.04);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   const pathname = usePathname();
   const [, startTransition] = useTransition();
 
@@ -258,241 +269,252 @@ export default function CatalogClient({ initialProducts }: CatalogClientProps) {
   };
 
   return (
-    <section className="bg-[#070707] text-[#EDE6D6] min-h-screen pt-40 lg:pt-48 pb-24 font-sans selection:bg-[#C9A84C] selection:text-[#070707]">
-      <div className="max-w-7xl mx-auto px-6 w-full">
+    <div 
+      className="bg-[#0B0B0B] text-[#EDE6D6] min-h-screen pb-24 font-sans selection:bg-[#C9A84C] selection:text-[#0B0B0B] relative"
+      style={{ paddingTop: 'clamp(140px, 12vw, 180px)' }}
+    >
+      {/* Monogram Background "F" */}
+      <div 
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-serif text-[80vh] select-none pointer-events-none z-0 transition-transform duration-75 text-[#C9A84C]/[0.02]"
+        style={{ 
+          transform: `translate(-50%, -50%) rotate(${rotation}deg)`
+        }}
+      >
+        F
+      </div>
+
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-12 w-full flex flex-col lg:flex-row items-start gap-12 relative z-10">
         
-        {/* Editorial Page Header */}
-        <div className="border-b border-[#F5F0E6]/10 pb-10 mb-12">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-              <span className="text-[9px] tracking-[0.45em] uppercase text-[#C9A84C] font-semibold mb-3 block">Joias Autorais</span>
-              <h1 className="font-serif text-4xl md:text-6xl font-light text-[#F5F0E6] uppercase tracking-wide">
-                O Acervo
-              </h1>
-            </div>
-            <p className="text-[11px] text-[#EDE6D6]/40 max-w-sm font-light leading-relaxed uppercase tracking-wider">
-              Peças desenhadas e esculpidas à mão no atelier. Acabamentos polidos, pedras selecionadas e garantia vitalícia de autenticidade.
-            </p>
+        {/* LEFT SIDEBAR: FILTERS */}
+        <aside className="w-[100%] lg:w-64 shrink-0 flex flex-col gap-8 lg:sticky lg:top-28 lg:h-[calc(100vh-160px)] overflow-y-auto pr-2 border-b lg:border-b-0 lg:border-r border-[#C9A84C]/15 pb-8 lg:pb-0">
+          <div>
+            <h2 className="font-serif text-[26px] tracking-wide font-light text-[#F5F0E6] uppercase mb-1.5">
+              Filtros
+            </h2>
+            <p className="font-sans text-[11px] tracking-[0.22em] text-[#EDE6D6]/45 uppercase font-light">Refine sua seleção</p>
           </div>
-        </div>
 
-        {/* Catalog Container Split Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          
-          {/* LEFT SIDEBAR: FILTERS */}
-          <aside className="lg:col-span-3 flex flex-col gap-10 lg:sticky lg:top-28">
-            
-            {/* Search Input In Sidebar */}
-            <form onSubmit={handleSearchSubmit} className="relative flex items-center border-b border-[#C9A84C]/25 py-2 mb-2">
-              <Search className="w-3.5 h-3.5 text-[#C9A84C] mr-3 shrink-0" />
-              <input
-                type="text"
-                placeholder="Filtrar nesta página..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-transparent text-[9px] tracking-[0.25em] text-[#EDE6D6] placeholder-[#EDE6D6]/30 focus:outline-none w-full uppercase border-none font-sans font-light"
-              />
-              {searchQuery && (
-                <button type="button" onClick={handleSearchClear} className="text-[#EDE6D6]/30 hover:text-white p-1">
-                  <X className="w-3 h-3" />
+          {/* Search Input In Sidebar */}
+          <form onSubmit={handleSearchSubmit} className="relative flex items-center bg-[#141414] border border-[#C9A84C]/20 focus-within:border-[#C9A84C]/65 transition-all duration-300 px-4 py-3 rounded-none">
+            <Search className="w-4 h-4 text-[#C9A84C] mr-3 shrink-0" />
+            <input
+              type="text"
+              placeholder="Filtrar nesta página..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-transparent text-[11px] lg:text-xs tracking-[0.18em] text-[#EDE6D6] placeholder-[#EDE6D6]/35 focus:outline-none w-full uppercase border-none font-sans font-light"
+            />
+            {searchQuery && (
+              <button type="button" onClick={handleSearchClear} className="text-[#EDE6D6]/35 hover:text-white p-1 ml-1.5">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </form>
+
+          {/* CATEGORIES MENU SECTION */}
+          <div className="flex flex-col gap-1.5">
+            {(
+              [
+                { id: 'all', label: 'Todas as Joias', icon: <Sparkles className="w-[17px] h-[17px] shrink-0" /> },
+                { id: 'anel', label: 'Anéis', icon: <Circle className="w-[17px] h-[17px] shrink-0" /> },
+                { id: 'colar', label: 'Colares & Escapulários', icon: <Layers className="w-[17px] h-[17px] shrink-0" /> },
+                { id: 'pulseira', label: 'Pulseiras', icon: <Sparkle className="w-[17px] h-[17px] shrink-0" /> },
+                { id: 'brinco', label: 'Brincos', icon: <Gem className="w-[17px] h-[17px] shrink-0" /> },
+                { id: 'pingente', label: 'Pingentes & Medalhas', icon: <Award className="w-[17px] h-[17px] shrink-0" /> },
+                { id: 'personalizavel', label: 'Personalizáveis', icon: <PenTool className="w-[17px] h-[17px] shrink-0" /> },
+              ] as const
+            ).map((cat) => {
+              const isActive = activeCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => handleCategorySelect(cat.id)}
+                  className={`pl-5 pr-4 py-3 flex items-center gap-3.5 transition-all text-left w-full border-l-[3px] rounded-none ${
+                    isActive
+                      ? 'text-[#C9A84C] font-semibold border-[#C9A84C] bg-[#C9A84C]/10'
+                      : 'text-[#EDE6D6]/60 hover:text-white border-transparent hover:border-[#EDE6D6]/20 hover:bg-[#EDE6D6]/3'
+                  }`}
+                >
+                  {cat.icon}
+                  <span className="font-sans text-[11px] lg:text-xs tracking-[0.18em] uppercase font-light">
+                    {cat.label}
+                  </span>
+                  <span className="text-[10px] text-[#EDE6D6]/30 font-mono font-medium ml-auto">
+                    ({categoryCounts[cat.id] || 0})
+                  </span>
                 </button>
-              )}
-            </form>
+              );
+            })}
+          </div>
 
-            {/* CATEGORIES SECTION */}
-            <div>
-              <h3 className="font-serif text-[13px] tracking-widest text-[#EDE6D6]/90 mb-6 border-b border-[#C9A84C]/15 pb-2 uppercase font-light">
-                Categorias
-              </h3>
-              <ul className="flex flex-col gap-4">
-                {(
-                  [
-                    { id: 'all', label: 'Todas as Joias' },
-                    { id: 'anel', label: 'Anéis' },
-                    { id: 'colar', label: 'Colares & Escapulários' },
-                    { id: 'pulseira', label: 'Pulseiras' },
-                    { id: 'brinco', label: 'Brincos & Trios' },
-                    { id: 'pingente', label: 'Pingentes & Medalhas' },
-                    { id: 'personalizavel', label: 'Personalizáveis' },
-                  ] as const
-                ).map((cat) => (
-                  <li key={cat.id}>
-                    <button
-                      onClick={() => handleCategorySelect(cat.id)}
-                      className={`flex items-center justify-between w-full text-left transition-colors duration-300 py-1.5 ${
-                        activeCategory === cat.id
-                          ? 'text-[#C9A84C]'
-                          : 'text-[#EDE6D6]/50 hover:text-[#EDE6D6]'
-                      }`}
-                    >
-                      <span className="text-[10px] tracking-[0.2em] uppercase font-sans font-light">
-                        {cat.label}
-                      </span>
-                      <span className="text-[9px] text-[#EDE6D6]/20 font-mono font-light">
-                        ({categoryCounts[cat.id] || 0})
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
+          {/* DYNAMIC PRICE SECTORS */}
+          <div className="flex flex-col gap-4 border-t border-[#C9A84C]/10 pt-6">
+            <div className="flex items-center gap-2.5 text-[#EDE6D6]/70">
+              <ChevronDown className="w-4 h-4 text-[#C9A84C]" />
+              <span className="font-sans text-[11.5px] lg:text-xs tracking-[0.18em] uppercase font-light">Preço</span>
             </div>
-
-            {/* PRICE FILTER SECTION */}
-            <div>
-              <h3 className="font-serif text-[13px] tracking-widest text-[#EDE6D6]/90 mb-6 border-b border-[#C9A84C]/15 pb-2 uppercase font-light">
-                Faixas de Preço
-              </h3>
-              <div className="flex flex-col gap-4">
-                {(
-                  [
-                    { id: 'all', label: 'Todos os Valores' },
-                    { id: 'under-100', label: 'Até R$ 100' },
-                    { id: '100-200', label: 'R$ 100 - R$ 200' },
-                    { id: 'above-200', label: 'Acima de R$ 200' },
-                  ] as const
-                ).map((range) => (
+            <div className="flex flex-col gap-3 pl-6">
+              {(
+                [
+                  { id: 'all', label: 'Todos os Valores' },
+                  { id: 'under-100', label: 'Até R$ 100' },
+                  { id: '100-200', label: 'R$ 100 - R$ 200' },
+                  { id: 'above-200', label: 'Acima de R$ 200' },
+                ] as const
+              ).map((range) => {
+                const isActive = priceFilter === range.id;
+                return (
                   <button
                     key={range.id}
                     onClick={() => handlePriceSelect(range.id)}
-                    className="flex items-center gap-3 text-left group py-1"
+                    className="flex items-center gap-3.5 text-left group py-1 w-full"
                   >
                     <div
-                      className={`w-3.5 h-3.5 border border-[#C9A84C]/35 flex items-center justify-center transition-all rounded-none ${
-                        priceFilter === range.id
+                      className={`w-4 h-4 border flex items-center justify-center transition-all duration-300 rounded-none shrink-0 ${
+                        isActive
                           ? 'bg-[#C9A84C] border-[#C9A84C]'
-                          : 'bg-transparent group-hover:border-[#C9A84C]'
+                          : 'bg-transparent border-[#C9A84C]/35 group-hover:border-[#C9A84C]'
                       }`}
                     >
-                      {priceFilter === range.id && <Check className="w-2.5 h-2.5 text-[#070707] stroke-[3px]" />}
+                      {isActive && <Check className="w-3 h-3 text-[#0B0B0B] stroke-[3px]" />}
                     </div>
                     <span
-                      className={`text-[10px] tracking-[0.2em] uppercase transition-colors font-sans font-light ${
-                        priceFilter === range.id ? 'text-[#C9A84C]' : 'text-[#EDE6D6]/40 hover:text-[#EDE6D6]/80'
+                      className={`text-[11px] lg:text-xs tracking-[0.15em] uppercase transition-colors duration-300 font-sans font-light ${
+                        isActive ? 'text-[#C9A84C]' : 'text-[#EDE6D6]/45 group-hover:text-white'
                       }`}
                     >
                       {range.label}
                     </span>
                   </button>
-                ))}
-              </div>
+                );
+              })}
             </div>
+          </div>
 
-            {/* CUSTOMIZATION OPTIONS */}
-            <div>
-              <h3 className="font-serif text-[13px] tracking-widest text-[#EDE6D6]/90 mb-6 border-b border-[#C9A84C]/15 pb-2 uppercase font-light">
-                Especificidades
-              </h3>
+          {/* DYNAMIC SPECIFICITIES SECTOR */}
+          <div className="flex flex-col gap-4 border-t border-[#C9A84C]/10 pt-6">
+            <div className="flex items-center gap-2.5 text-[#EDE6D6]/70">
+              <ChevronDown className="w-4 h-4 text-[#C9A84C]" />
+              <span className="font-sans text-[11.5px] lg:text-xs tracking-[0.18em] uppercase font-light">Especificidades</span>
+            </div>
+            <div className="flex flex-col gap-3 pl-6">
               <button
                 onClick={() => setOnlyEngravable(!onlyEngravable)}
-                className="flex items-center gap-3 text-left group w-full py-1"
+                className="flex items-center gap-3.5 text-left group w-full py-1"
               >
                 <div
-                  className={`w-3.5 h-3.5 border border-[#C9A84C]/35 flex items-center justify-center transition-all rounded-none ${
-                    onlyEngravable ? 'bg-[#C9A84C] border-[#C9A84C]' : 'bg-transparent group-hover:border-[#C9A84C]'
+                  className={`w-4 h-4 border flex items-center justify-center transition-all duration-300 rounded-none shrink-0 ${
+                    onlyEngravable ? 'bg-[#C9A84C] border-[#C9A84C]' : 'bg-transparent border-[#C9A84C]/35 group-hover:border-[#C9A84C]'
                   }`}
                 >
-                  {onlyEngravable && <Check className="w-2.5 h-2.5 text-[#070707] stroke-[3px]" />}
+                  {onlyEngravable && <Check className="w-3 h-3 text-[#0B0B0B] stroke-[3px]" />}
                 </div>
                 <div className="flex flex-col">
                   <span
-                    className={`text-[10px] tracking-[0.2em] uppercase font-sans font-light ${
-                      onlyEngravable ? 'text-[#C9A84C]' : 'text-[#EDE6D6]/50 group-hover:text-[#EDE6D6]'
+                    className={`text-[11px] lg:text-xs tracking-[0.15em] uppercase font-sans font-light transition-colors duration-300 ${
+                      onlyEngravable ? 'text-[#C9A84C]' : 'text-[#EDE6D6]/45 group-hover:text-white'
                     }`}
                   >
                     Personalizável à Laser
                   </span>
-                  <span className="text-[8px] tracking-[0.15em] text-[#EDE6D6]/20 uppercase mt-0.5 font-sans font-light">Gravação no Atelier</span>
+                  <span className="text-[9px] tracking-[0.15em] text-[#EDE6D6]/25 uppercase mt-0.5 font-sans font-light">Gravação no Atelier</span>
                 </div>
               </button>
             </div>
+          </div>
 
-            {/* CLEAR FILTERS BUTTON */}
-            {(activeCategory !== 'all' || priceFilter !== 'all' || searchQuery !== '' || onlyEngravable) && (
+          {/* CLEAR FILTERS BUTTON */}
+          {(activeCategory !== 'all' || priceFilter !== 'all' || searchQuery !== '' || onlyEngravable) && (
+            <div className="mt-auto pt-6">
               <button
                 onClick={clearAllFilters}
-                className="w-full h-11 border border-[#C9A84C]/25 text-[9px] uppercase tracking-[0.25em] font-semibold text-[#C9A84C] hover:bg-[#C9A84C] hover:text-[#070707] transition-all duration-300"
+                className="w-full h-11 border border-[#C9A84C]/45 text-[11px] lg:text-xs uppercase tracking-[0.25em] font-semibold text-[#C9A84C] hover:bg-[#C9A84C] hover:text-[#0B0B0B] transition-all duration-500 font-sans"
               >
-                Limpar Todos os Filtros
+                Limpar Filtros
               </button>
-            )}
-          </aside>
+            </div>
+          )}
+        </aside>
 
-          {/* RIGHT COL: PRODUCT CATALOG GRID */}
-          <main className="lg:col-span-9">
+        {/* RIGHT COL: PRODUCT CATALOG GALLERY */}
+        <section className="flex-1">
+          {/* Gallery Header */}
+          <header className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#C9A84C]/15 pb-8 mb-12 gap-6">
+            <div>
+              <h1 className="font-serif text-4xl md:text-5xl font-light text-[#F5F0E6] uppercase tracking-wide">
+                Acervo Completo
+              </h1>
+              <p className="text-[11px] text-[#EDE6D6]/40 max-w-md font-sans font-light leading-relaxed uppercase tracking-wider mt-4">
+                Uma curadoria de peças atemporais, esculpidas à mão com os metais e gemas mais raros do mundo.
+              </p>
+            </div>
             
-            {/* Top Toolbar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#F5F0E6]/5 pb-6 mb-8 gap-4">
-              <span className="text-[10px] tracking-widest text-[#EDE6D6]/35 uppercase">
-                Exibindo {processedProducts.length} {processedProducts.length === 1 ? 'joia' : 'joias'}
-              </span>
-
-              {/* Sort Selector */}
-              <div className="flex items-center gap-3">
-                <span className="text-[9px] tracking-widest uppercase text-[#EDE6D6]/30">Ordenar por:</span>
-                <div className="relative group">
-                  <select
-                    value={sortBy}
-                    onChange={(e) => handleSortSelect(e.target.value as SortType)}
-                    className="appearance-none bg-[#141414] border border-[#F5F0E6]/10 text-[9px] tracking-widest text-[#EDE6D6]/85 uppercase px-4 py-2 pr-8 focus:outline-none focus:border-[#C9A84C] cursor-pointer rounded-none"
-                  >
-                    <option value="default">Relevância</option>
-                    <option value="price-asc">Menor Preço</option>
-                    <option value="price-desc">Maior Preço</option>
-                    <option value="name-asc">Ordem A - Z</option>
-                    <option value="name-desc">Ordem Z - A</option>
-                  </select>
-                  <ChevronDown className="w-3 h-3 text-[#C9A84C] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                </div>
-              </div>
-            </div>
-
-            {/* Active search filter badge */}
-            {searchParam && (
-              <div className="flex items-center gap-2 mb-6">
-                <span className="text-[9px] tracking-widest text-[#EDE6D6]/40 uppercase">Busca ativa por:</span>
-                <span className="bg-[#C9A84C]/10 border border-[#C9A84C]/25 text-[#C9A84C] text-[9px] uppercase tracking-widest px-3 py-1 flex items-center gap-2">
-                  "{searchParam}"
-                  <button onClick={handleSearchClear} className="hover:text-white">
-                    <X className="w-2.5 h-2.5" />
-                  </button>
-                </span>
-              </div>
-            )}
-
-            {/* PRODUCT GRID */}
-            {processedProducts.length > 0 ? (
-              <div className="prod-grid !grid-cols-2 md:!grid-cols-2 lg:!grid-cols-3 !gap-4 md:!gap-8">
-                {processedProducts.slice(0, visibleCount).map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            ) : (
-              // Empty State
-              <div className="border border-[#F5F0E6]/5 bg-[#141414] p-16 text-center flex flex-col items-center gap-4">
-                <span className="font-serif text-lg text-[#EDE6D6]/80 font-light">Nenhuma joia encontrada no acervo</span>
-                <p className="text-[10px] text-[#EDE6D6]/30 uppercase tracking-widest max-w-xs leading-relaxed">
-                  Não encontramos correspondência para os filtros aplicados. Tente ajustar sua busca.
-                </p>
-                <button
-                  onClick={clearAllFilters}
-                  className="mt-4 px-6 py-2.5 bg-[#C9A84C] text-[#070707] text-[9px] uppercase tracking-widest font-bold hover:bg-[#E2C97E] transition-all"
+            {/* Sort Selector */}
+            <div className="flex items-center gap-3.5 pb-2 border-b border-[#C9A84C]/20 self-start md:self-end">
+              <span className="font-sans text-[9px] tracking-[0.2em] text-[#EDE6D6]/40 uppercase">ORDENAR POR:</span>
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => handleSortSelect(e.target.value as SortType)}
+                  className="appearance-none bg-transparent border-none text-[#C9A84C] font-sans text-[9px] tracking-[0.2em] uppercase focus:ring-0 focus:outline-none cursor-pointer pr-5"
                 >
-                  Ver Todo o Acervo
-                </button>
+                  <option value="default">Relevância</option>
+                  <option value="price-asc">Menor Preço</option>
+                  <option value="price-desc">Maior Preço</option>
+                  <option value="name-asc">Ordem A - Z</option>
+                  <option value="name-desc">Ordem Z - A</option>
+                </select>
+                <ChevronDown className="w-3 h-3 text-[#C9A84C] absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
-            )}
-
-            {/* INFINITE SCROLL SENTINEL */}
-            <div id="scroll-sentinel" className="h-20 w-full flex items-center justify-center mt-6">
-              {processedProducts.length > visibleCount && (
-                <span className="text-[9px] tracking-[0.35em] text-[#C9A84C]/50 uppercase font-light animate-pulse font-sans">
-                  Carregando mais joias...
-                </span>
-              )}
             </div>
-          </main>
-        </div>
+          </header>
+
+          {/* Active search filter badge */}
+          {searchParam && (
+            <div className="flex items-center gap-2 mb-6">
+              <span className="text-[9px] tracking-widest text-[#EDE6D6]/40 uppercase">Busca ativa por:</span>
+              <span className="bg-[#C9A84C]/10 border border-[#C9A84C]/25 text-[#C9A84C] text-[9px] uppercase tracking-widest px-3 py-1 flex items-center gap-2">
+                "{searchParam}"
+                <button onClick={handleSearchClear} className="hover:text-white">
+                  <X className="w-2.5 h-2.5" />
+                </button>
+              </span>
+            </div>
+          )}
+
+          {/* PRODUCT GRID */}
+          {processedProducts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+              {processedProducts.slice(0, visibleCount).map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          ) : (
+            // Empty State
+            <div className="border border-[#F5F0E6]/5 bg-[#141414] p-16 text-center flex flex-col items-center gap-4">
+              <span className="font-serif text-lg text-[#EDE6D6]/80 font-light">Nenhuma joia encontrada no acervo</span>
+              <p className="text-[10px] text-[#EDE6D6]/30 uppercase tracking-widest max-w-xs leading-relaxed font-sans font-light">
+                Não encontramos correspondência para os filtros aplicados. Tente ajustar sua busca.
+              </p>
+              <button
+                onClick={clearAllFilters}
+                className="mt-4 px-6 py-2.5 bg-[#C9A84C] text-[#0B0B0B] text-[9px] uppercase tracking-widest font-bold hover:bg-[#E2C97E] transition-all font-sans font-medium"
+              >
+                Ver Todo o Acervo
+              </button>
+            </div>
+          )}
+
+          {/* INFINITE SCROLL SENTINEL */}
+          <div id="scroll-sentinel" className="h-20 w-full flex items-center justify-center mt-6">
+            {processedProducts.length > visibleCount && (
+              <span className="text-[9px] tracking-[0.35em] text-[#C9A84C]/50 uppercase font-light animate-pulse font-sans">
+                Carregando mais joias...
+              </span>
+            )}
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
   );
 }

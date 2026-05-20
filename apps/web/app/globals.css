@@ -138,8 +138,7 @@ nav.scrolled {
 .nav-actions button:hover { opacity: 1; }
 .nav-actions svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.4; }
 .cart-badge { position: relative; }
-.cart-badge::after {
-  content: '2';
+.cart-count {
   position: absolute; top: -6px; right: -6px;
   width: 14px; height: 14px;
   background: var(--gold);
@@ -149,6 +148,7 @@ nav.scrolled {
   color: var(--black);
   font-family: var(--sans);
 }
+
 
 .hero {
   position: relative;

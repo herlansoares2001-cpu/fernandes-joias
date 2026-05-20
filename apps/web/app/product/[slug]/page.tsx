@@ -7,7 +7,8 @@ interface Variant {
   size: string;
   priceAdjustment: number;
   inventory?: {
-    quantity: number;
+    quantityAvailable: number;
+    quantityReserved: number;
   } | null;
 }
 

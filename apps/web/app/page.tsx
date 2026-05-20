@@ -11,7 +11,7 @@ import type { Product } from '../types';
 async function getProducts(): Promise<Product[]> {
   try {
     const res = await fetch('http://localhost:3002/api/v1/products', {
-      cache: 'no-store',
+      next: { revalidate: 10 },
     });
     if (!res.ok) throw new Error('Failed to fetch');
     return await res.json();

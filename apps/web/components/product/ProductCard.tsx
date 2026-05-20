@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { Star } from 'lucide-react';
+import { useWishlist } from '../../lib/wishlist-context';
 import type { Product } from '../../types';
 
 interface ProductCardProps {
@@ -10,6 +10,9 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const { toggleWishlist, isWishlisted } = useWishlist();
+  const wishlisted = isWishlisted(product.id);
+
   // Local IntersectionObserver to trigger the editorial reveal fade-in animation
   const [isInView, setIsInView] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -59,8 +62,13 @@ export default function ProductCard({ product }: ProductCardProps) {
           <Link href={`/product/${product.slug}`} className="prod-btn prod-btn-main">
             Ver Detalhes
           </Link>
-          <button className="prod-btn prod-btn-wish">
-            Lista de Desejos
+          <button 
+            onClick={() => toggleWishlist(product.id)}
+            className={`prod-btn prod-btn-wish transition-colors ${
+              wishlisted ? '!bg-[#C9A84C] !text-[#070707] font-semibold' : ''
+            }`}
+          >
+            {wishlisted ? 'Na Wishlist' : 'Lista de Desejos'}
           </button>
         </div>
       </div>
@@ -76,11 +84,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           <span className="prod-price">
             R$ {product.basePrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </span>
-        </div>
-        <div className="prod-stars">
-          {[...Array(5)].map((_, i) => (
-            <Star key={i} className="text-[#C9A84C] fill-[#C9A84C]" style={{ width: '10px', height: '10px' }} />
-          ))}
         </div>
       </div>
     </div>
